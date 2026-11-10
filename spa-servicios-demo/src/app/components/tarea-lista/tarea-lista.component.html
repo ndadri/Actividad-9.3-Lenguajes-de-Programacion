@@ -1,0 +1,72 @@
+<div class="container">
+  <h2>📋 Lista de Tareas (Consumo Reactivo con Pipe Async)</h2>
+
+  <!-- Formulario para agregar nuevas tareas usando agregarTarea del servicio -->
+  <form class="formulario-tarea" (ngSubmit)="agregar()">
+    <div class="form-group">
+      <input 
+        type="text" 
+        [(ngModel)]="nuevoTitulo" 
+        name="nuevoTitulo" 
+        placeholder="Título de la nueva tarea..." 
+        required 
+        class="input-control" />
+    </div>
+    <div class="form-group">
+      <input 
+        type="text" 
+        [(ngModel)]="nuevaDescripcion" 
+        name="nuevaDescripcion" 
+        placeholder="Descripción..." 
+        class="input-control" />
+    </div>
+    <div class="form-group select-group">
+      <select [(ngModel)]="nuevaPrioridad" name="nuevaPrioridad" class="select-control">
+        <option value="Alta">Prioridad Alta</option>
+        <option value="Media">Prioridad Media</option>
+        <option value="Baja">Prioridad Baja</option>
+      </select>
+    </div>
+    <button type="submit" class="btn-agregar">➕ Agregar Tarea</button>
+  </form>
+
+  <!-- Tabla reactiva consumida con Pipe Async -->
+  <div *ngIf="tareas$ | async as tareas; else cargando">
+    <table class="tabla-spa">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Título</th>
+          <th>Descripción</th>
+          <th>Prioridad</th>
+          <th>Estado</th>
+          <th>Acción</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let t of tareas">
+          <td>{{ t.id }}</td>
+          <td><strong>{{ t.titulo }}</strong></td>
+          <td>{{ t.descripcion }}</td>
+          <td>
+            <span [class]="'badge prioridad-' + t.prioridad.toLowerCase()">
+              {{ t.prioridad }}
+            </span>
+          </td>
+          <td>
+            <span [class]="t.completada ? 'estado-completada' : 'estado-pendiente'">
+              {{ t.completada ? '✅ Completada' : '⏳ Pendiente' }}
+            </span>
+          </td>
+          <td>
+            <button (click)="eliminar(t.id)" class="btn-borrar">🗑️ Eliminar</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <ng-template #cargando>
+    <p class="cargando-text">Cargando datos desde el Servicio REST...</p>
+  </ng-template>
+</div>
